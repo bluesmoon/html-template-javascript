@@ -6,6 +6,23 @@ var _initialisers = {};
 
 var _params = {};
 
+var _validate_params = function(param) {
+	if (typeof param === "string") {
+		return true;
+	} else if (typeof param === "array") {
+		var valid = true;
+		for (var i = 0; i < param.length; i++) {
+			if (!_validate_params(param[i]))
+				valid = false;
+		}
+		return valid;
+	} else if (param.length && (typeof param.length === "number")) {
+		return _validate_params(param);
+	} else {
+		return false;
+	}
+};
+
 var _process_var = function(attrs) {
 };
 
@@ -35,7 +52,18 @@ HTML.Template = function(o) {
 HTML.Template.prototype = {
 	param: function (o) {
 		if(typeof o === "object") {
-			// Set parameters
+			// Set parameters after checking
+			var valid = true;
+			var re = new RegExp("\\w+");
+			for (var key in o) {
+				if (!key.match(re) || !_validate_params(o[key]))
+					valid = false;
+			}
+			
+			// TODO: Log error
+			if (valid)
+				_params = o;
+			return valid;
 		} else if(typeof o === "string") {
 			// Get parameter
 			return _params[o];
