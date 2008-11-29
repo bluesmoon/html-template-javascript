@@ -2,20 +2,16 @@ var HTML = HTML || {};
 
 (function() {
 
-var _initialisers = {};
-
-var _params = {};
-
 var _validate_params = function(param) {
 	if (typeof param === "string") {
 		return true;
 	} else if (typeof param === "array") {
-		var valid = true;
 		for (var i = 0; i < param.length; i++) {
-			if (!_validate_params(param[i]))
-				valid = false;
+			if (!_validate_params(param[i])) {
+				return false;
+			}
 		}
-		return valid;
+		return true;
 	} else if (param.length && (typeof param.length === "number")) {
 		return _validate_params(param);
 	} else {
@@ -38,16 +34,20 @@ var _process = function(m0, m1, m2) {
 		// TODO: maybe parse m2 into an object
 		return _process_var(m2);
 	} else if (m1.toUpperCase() == "IF") {
-		return _proces_if(m2);
+		return _process_if(m2);
 	}
-}
+};
 
 HTML.Template = function(o) {
+
+	this._initialisers = {};
+	this._params = {};
+
 	if(typeof o === "string") {
-		_initialisers.tmpl_string = o;
+		this._initialisers.tmpl_string = o;
 	} else if(typeof o === "object") {
 		// TODO: check parameters inside o before assigning
-		_initialisers = o;
+		this._initialisers = o;
 	} else {
 		return undefined;
 	}
@@ -59,23 +59,21 @@ HTML.Template.prototype = {
 	param: function (o) {
 		if(typeof o === "object") {
 			// Set parameters after checking
-			var valid = true;
-			var re = new RegExp("\\w+");
 			for (var key in o) {
-				if (!key.match(re) || !_validate_params(o[key]))
-					valid = false;
+				if (!key.match(/\w+/) || !_validate_params(o[key])) {
+					// TODO: Log error
+					return false;
+				}
 			}
 			
-			// TODO: Log error
-			if (valid)
-				_params = o;
-			return valid;
+			this._params = o;
+			return this._params;
 		} else if(typeof o === "string") {
 			// Get parameter
-			return _params[o];
+			return this._params[o];
 		} else if(typeof o === "undefined") {
 			// Get all parameters
-			return _params;
+			return this._params;
 		} else {
 			// TODO: log an error
 			return undefined;
@@ -86,7 +84,9 @@ HTML.Template.prototype = {
 	},
 
 	clear_params: function() {
-		_params = {};
+		this._params = {};
+
+		return this;
 	}
 };
 
