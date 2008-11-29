@@ -26,6 +26,10 @@ var _validate_params = function(param) {
 var _process_var = function(attrs) {
 };
 
+var _process_if = function(attrs) {
+	//lookup the variable in _params and check if its value is undefined or false
+
+};
 var _process = function(m0, m1, m2) {
 	if(typeof m1 === "undefined") {
 		// TODO: Log error (throw error if strict)
@@ -33,6 +37,8 @@ var _process = function(m0, m1, m2) {
 	} else if(m1.toUpperCase() === "VAR") {
 		// TODO: maybe parse m2 into an object
 		return _process_var(m2);
+	} else if (m1.toUpperCase() == "IF") {
+		return _proces_if(m2);
 	}
 }
 
