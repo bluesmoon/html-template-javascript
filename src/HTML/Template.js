@@ -61,6 +61,8 @@ HTML.Template.prototype = {
 			}
 			
 			// TODO: Log error
+			if (valid)
+				_params = o;
 			return valid;
 		} else if(typeof o === "string") {
 			// Get parameter
