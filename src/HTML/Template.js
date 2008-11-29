@@ -49,7 +49,7 @@ HTML.Template.prototype = {
 	output: function() {
 	},
 
-	clear_params() {
+	clear_params: function() {
 		_params = {};
 	}
 };
