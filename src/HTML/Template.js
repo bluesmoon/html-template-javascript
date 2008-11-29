@@ -55,7 +55,7 @@ HTML.Template.prototype = {
 			// Set parameters after checking
 			var valid = true;
 			var re = new RegExp("\\w+");
-			for (key in o) {
+			for (var key in o) {
 				if (!key.match(re) || !_validate_params(o[key]))
 					valid = false;
 			}
