@@ -35,14 +35,16 @@ HTML.Template = function(o) {
 HTML.Template.prototype = {
 	param: function (o) {
 		if(typeof o === "object") {
-			/* Set parameters */
+			// Set parameters
 		} else if(typeof o === "string") {
-			/* Get parameter */
+			// Get parameter
+			return _params[o];
 		} else if(typeof o === "undefined") {
-			/* Get all parameters */
+			// Get all parameters
+			return _params;
 		} else {
 			// TODO: log an error
-			return "undefined";
+			return undefined;
 		}
 	},
 
