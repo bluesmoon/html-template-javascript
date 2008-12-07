@@ -19,6 +19,13 @@ var _validate_params = function(param) {
 	}
 };
 
+var _find = function(obj) {
+	// check if _param has a property with name obj 
+	if (obj in this._params) {
+		return true;
+	}
+	return false;
+}
 var _process_var = function(attrs) {
 
 	//process the var and create an object in params with var name, default and escape
@@ -27,7 +34,19 @@ var _process_var = function(attrs) {
 	attrs = attrs.replace(/\s/g, "");
 	//find the name and create a property in _params 
 	var t1 = attrs.match(this._nameRegex,'g').split('=');
-	this._params[t1[1]] = {};
+	//if name was not found in attrs, then we need to dereference the variable. For example <tpl_var img_source> , in this case we shall return
+	// the value of img_source instaed of creating a new param
+	if (_find(attrs)) {
+		return this._params[attrs].val;
+	} else {		
+		if (t1) { 
+			this._params[t1[1]] = {};
+		} else {
+			// Expression passed did not had name proeprty nor anything matching was found in _params. Hence error
+			//TODO: throw an exception
+			return;
+		}
+	}
 	
 	// create a property called val for the property created in previous step. The val is set to default specified or an empty string.
 	var t2 = attrs.match(this._defaultRegex,'g');
